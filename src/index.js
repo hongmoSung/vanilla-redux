@@ -16,10 +16,10 @@ const countModifier = (count = 0, action) => {
 };
 const countStore = createStore(countModifier);
 
-countStore.dispatch({ type: "ADD" });
-countStore.dispatch({ type: "ADD" });
-countStore.dispatch({ type: "ADD" });
-countStore.dispatch({ type: "ADD" });
-countStore.dispatch({ type: "ADD" });
-countStore.dispatch({ type: "MINUS" });
-console.log(countStore.getState());
+countStore.subscribe(() => {
+  span.innerHTML = countStore.getState();
+  console.log("there is change on store ");
+});
+
+add.addEventListener("click", () => countStore.dispatch({ type: "ADD" }));
+minus.addEventListener("click", () => countStore.dispatch({ type: "MINUS" }));
