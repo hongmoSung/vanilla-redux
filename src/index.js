@@ -1,28 +1,40 @@
+import { createElement } from "react";
 import { createStore } from "redux";
 
-const add = document.getElementById("add");
-const minus = document.getElementById("minus");
-const span = document.querySelector("span");
+const TO_ADD = "TO_ADD";
+const TO_DELETE = "TO_DELETE";
 
-const ADD = "ADD";
-const MINUS = "MINUS";
+const input = document.querySelector("input");
+const form = document.querySelector("form");
+const ul = document.querySelector("ul");
 
-const countModifier = (count = 0, action) => {
+const reducer = (todo = [], action) => {
   switch (action.type) {
-    case ADD:
-      return count + 1;
-    case MINUS:
-      return count - 1;
+    case TO_ADD:
+      todo.push(action.text);
+      return todo;
+    case TO_DELETE:
+      return [];
     default:
-      return count;
+      return todo;
   }
 };
-const countStore = createStore(countModifier);
 
-countStore.subscribe(() => {
-  span.innerHTML = countStore.getState();
-  console.log("there is change on store ");
-});
+const store = createStore(reducer);
 
-add.addEventListener("click", () => countStore.dispatch({ type: ADD }));
-minus.addEventListener("click", () => countStore.dispatch({ type: MINUS }));
+const createTodo = () => {
+  console.log(store.getState());
+  const li = document.createElement("li");
+  li.innerHTML = store.getState()[store.getState().length - 1];
+  ul.appendChild(li);
+};
+
+store.subscribe(createTodo);
+
+const onSubmit = e => {
+  e.preventDefault();
+  const todo = input.value;
+  store.dispatch({ type: TO_ADD, text: todo });
+};
+
+form.addEventListener("submit", onSubmit);
